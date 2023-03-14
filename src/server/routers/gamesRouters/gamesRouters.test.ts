@@ -29,9 +29,6 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await Game.deleteMany();
-});
-
-afterEach(() => {
   jest.clearAllMocks();
 });
 

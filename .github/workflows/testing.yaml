@@ -18,3 +18,6 @@ jobs:
         run: npm test
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_ID: ${{ secrets.SUPABASE_ID }}

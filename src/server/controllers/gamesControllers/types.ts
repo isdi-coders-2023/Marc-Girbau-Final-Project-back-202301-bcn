@@ -1,6 +1,7 @@
-export interface Game {
+export interface GameStructure {
   name: string;
-  backupImage: string;
+  image: string;
+  backupImage?: string;
   about: string;
   platforms: string[];
   categories: string[];
@@ -10,4 +11,17 @@ export interface Game {
   ageRating: string;
 }
 
-export type Games = Game[];
+export interface GameFormData {
+  name: string;
+  image: unknown;
+  backupImage?: string;
+  about: string;
+  platforms: string[];
+  categories: string[];
+  gameplayTime: number;
+  releaseYear: number;
+  developer: string;
+  ageRating: string;
+}
+
+export type GamesStructure = GameStructure[];

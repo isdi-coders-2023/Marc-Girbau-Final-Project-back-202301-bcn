@@ -5,9 +5,12 @@ const gameSchema = new Schema({
     type: String,
     required: true,
   },
-  backupImage: {
+  image: {
     type: String,
     required: true,
+  },
+  backupImage: {
+    type: String,
   },
   about: { type: String, required: true },
   platforms: { type: [String], required: true },

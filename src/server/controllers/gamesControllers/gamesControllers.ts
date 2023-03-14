@@ -1,7 +1,23 @@
+import "../../../loadEnvironment.js";
 import { type NextFunction, type Request, type Response } from "express";
+import { createClient } from "@supabase/supabase-js";
+import fs from "fs/promises";
+import path from "path";
 import CustomError from "../../../CustomError/CustomError.js";
 import Game from "../../../database/models/Game.js";
-import { type Games } from "./types.js";
+import statusCodes from "../../utils/statusCodes.js";
+import { type GamesStructure, type GameFormData } from "./types.js";
+import {
+  supabaseId,
+  supabaseKey,
+  supabaseUrl,
+} from "../../../loadEnvironment.js";
+
+const supabase = createClient(supabaseUrl!, supabaseKey!);
+
+const {
+  clientError: { badRequest },
+} = statusCodes;
 
 export const getAllGames = async (
   req: Request,
@@ -13,7 +29,7 @@ export const getAllGames = async (
     page: +req.query.page! || 0,
     filter: req.query.filter,
   };
-  let games: Games;
+  let games: GamesStructure;
   let totalGames: number;
 
   try {
@@ -47,6 +63,36 @@ export const getAllGames = async (
       (error as Error).message,
       500,
       "There was an error"
+    );
+
+    next(customError);
+  }
+};
+
+export const createGame = async (
+  req: Request<Record<string, unknown>, Record<string, unknown>, GameFormData>,
+  res: Response,
+  next: NextFunction
+) => {
+  const game = req.body;
+  const gameImage = req.file?.filename;
+
+  try {
+    const backupImage = await fs.readFile(path.join("uploads", gameImage!));
+    await supabase.storage.from(supabaseId!).upload(gameImage!, backupImage);
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(supabaseId!).getPublicUrl(gameImage!);
+
+    await Game.create({ ...game, image: gameImage, backupImage: publicUrl });
+
+    res.status(201).json({ message: "The game has been created" });
+  } catch (error) {
+    const customError = new CustomError(
+      "There was a problem creating the game",
+      badRequest,
+      "Something went wrong"
     );
 
     next(customError);

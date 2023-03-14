@@ -3,6 +3,9 @@ const routes = {
     login: "/login",
     register: "/register",
   },
+  games: {
+    create: "/create",
+  },
 };
 
 export default routes;
